@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[FabriZZio]]></title>
-  <link href="http://FabriZZio.github.com/atom.xml" rel="self"/>
+  <title><![CDATA[Category: monitoring | FabriZZio]]></title>
+  <link href="http://FabriZZio.github.com/blog/categories/monitoring/atom.xml" rel="self"/>
   <link href="http://FabriZZio.github.com/"/>
   <updated>2012-11-01T20:52:29+01:00</updated>
   <id>http://FabriZZio.github.com/</id>
@@ -42,7 +42,7 @@ StatsD supports different types of stats:</p>
 
 <p>Before sending the stats to a backend (every defined flushInterval), StatsD aggregates the received values. Counters will have their individual values summed, others will be averaged.</p>
 
-<p>StatsD&#8217;s default flushInterval is set to 10 seconds. Depending on the type of applications you are monitoring, you might want to adjust this interval. We work with a 30 second interval.</p>
+<p>StatsD's default flushInterval is set to 10 seconds. Depending on the type of applications you are monitoring, you might want to adjust this interval. We work with a 30 second interval.</p>
 
 <h3>Graphite</h3>
 
@@ -78,8 +78,8 @@ aggregationMethod = average
 <p>When rendering graphs in Graphite, you might want to keep your defined retention rules in mind.
 This means that, with the above configuration, when you look at a graph with a relative time range greater than 6 hours, your data will automatically be rendered per minute.</p>
 
-<p><img src="http://FabriZZio.github.com/images/blog/outgoing_sms_6hour.png">
-<img src="http://FabriZZio.github.com/images/blog/outgoing_sms_8hour.png"></p>
+<p><img src="/images/blog/outgoing_sms_6hour.png">
+<img src="/images/blog/outgoing_sms_8hour.png"></p>
 
 <p>When looking closely at some of the graphs we were rendering, we noticed that sometimes the data rendered in the PNG graph did not correspond to the actual datapoints.
 The reason was the default <a href="https://graphite.readthedocs.org/en/latest/render_api.html#minxstep">minXStep</a> parameter used when rendering a graph.
@@ -92,15 +92,15 @@ To avoid this behaviour, render a larger graph using the width/height parameters
 /render?width=300&amp;from=-6hours&amp;until=-&amp;height=400&amp;target=stats_counts.stats.m4-core.production.sms.outgoing.success&amp;_uniq=0.4623039819178113&amp;title=minXStep = 0&amp;hideLegend=1&amp;minXStep=0
 </code></pre>
 
-<p><img src="http://FabriZZio.github.com/images/blog/monitoring_minxstep_default.png">
-<img src="http://FabriZZio.github.com/images/blog/monitoring_minxstep_0.png"></p>
+<p><img src="/images/blog/monitoring_minxstep_default.png">
+<img src="/images/blog/monitoring_minxstep_0.png"></p>
 
-<p>You can easily use your own graph rendering engine with the data Graphite provides. Using the <code>format</code> <a href="https://graphite.readthedocs.org/en/latest/render_api.html">URL parameter</a>, you can choose to receive the available data in JSON, CSV, &#8230;</p>
+<p>You can easily use your own graph rendering engine with the data Graphite provides. Using the <code>format</code> <a href="https://graphite.readthedocs.org/en/latest/render_api.html">URL parameter</a>, you can choose to receive the available data in JSON, CSV, ...</p>
 
 <h2>Monitoring integration into your application</h2>
 
 <p><a href="http://github.com/FabriZZio/statsd-php">StatsD PHP</a> is a small PHP library which can be easily integrated.
-Monitoring your application is as easy as defining a default monitoring host and application namespace and you&#8217;re off to go:</p>
+Monitoring your application is as easy as defining a default monitoring host and application namespace and you're off to go:</p>
 
 <pre><code>\StatsD\StatsD::setDefaultHandler(new \StatsD\UdpHandler($config-&gt;monitoring-&gt;host));
 \StatsD\StatsD::setDefaultNamespace($config-&gt;monitoring-&gt;namespace); // ex.: some-application.production
@@ -109,7 +109,7 @@ Monitoring your application is as easy as defining a default monitoring host and
 <p>The namespace you define in StatsD should differ per application. Graphite will create these namespaces automatically in its graphical interface.
 Dots in stats names will translate in a folder in the Graphite interface. Once your monitoring environment is set up, there is zero configuration for your next application.</p>
 
-<p><img src="http://FabriZZio.github.com/images/blog/monitoring_tree.png"></p>
+<p><img src="/images/blog/monitoring_tree.png"></p>
 
 <p>Adding a new location where you want to track your application requires one line of code and a originally chosen measurement name:</p>
 
@@ -124,14 +124,14 @@ Dots in stats names will translate in a folder in the Graphite interface. Once y
 </code></pre>
 
 <p>More details on using the StatsD PHP library can be found in its <a href="http://github.com/FabriZZio/statsd-php">repository</a>.
-Libraries for other languages can be found in the original Etsy&#8217;s <a href="http://github.com/etsy/statsd">StatsD repository</a>.</p>
+Libraries for other languages can be found in the original Etsy's <a href="http://github.com/etsy/statsd">StatsD repository</a>.</p>
 
-<h2>It&#8217;s fun!</h2>
+<h2>It's fun!</h2>
 
 <p>Monitoring is fun, seriously. As a developer, you can actually <em>see</em> your application being used.
 You can easily track errors and/or performance after new releases and when implementing new functionality, you should integrate measuring points from the start.</p>
 
-<p>No matter what project your are currently working on, it&#8217;ll pay off.</p>
+<p>No matter what project your are currently working on, it'll pay off.</p>
 ]]></content>
   </entry>
   
