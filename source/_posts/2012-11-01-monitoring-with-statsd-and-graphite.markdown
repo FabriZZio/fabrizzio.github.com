@@ -4,7 +4,6 @@ title: "Monitoring with StatsD and Graphite"
 date: 2012-11-01 10:53
 comments: true
 categories: monitoring
-published: false
 ---
 Monitoring can provide you with detailed insights on the usage and performance of your application.
 
@@ -12,10 +11,10 @@ The hard part about monitoring is finding out which measurements are most intere
 
 The easy part is setting up the tools and integrating monitoring into your application.
 
-### Setting up the tools
+## Setting up the tools
 The tools we use at [Marlon](http://www.marlon.be) are [StatsD](http://github.com/etsy/statsd) and [Graphite](http://graphite.wikidot.com).
 
-#### StatsD
+### StatsD
 StatsD is a network daemon, running on Node.js, that listens for statistics. The stats are sent from the application over UDP (fire and forget).
 StatsD supports different types of stats:
 
@@ -27,11 +26,11 @@ Before sending the stats to a backend (every defined flushInterval), StatsD aggr
 
 StatsD's default flushInterval is set to 10 seconds. Depending on the type of applications you are monitoring, you might want to adjust this interval. We work with a 30 second interval.
 
-#### Graphite
-Graphite is the backend into StatsD flushes its aggregated data every flushInterval. The flood of stats data can be controlled by using storage schemas.
+### Graphite
+Graphite is the backend whereto StatsD flushes its aggregated data every flushInterval. The flood of monitoring data can be controlled by defining retention schemas.
 This way, you can have Graphite keep track of your data as granular as possible on short term, and have it aggregated for long term storage.
 
-##### Configuration
+#### Configuration
 The following `conf/storage-schemas.conf` detects stats named `stats.<anything>` and will store 30 second data for 6 hours, 1 minute data for 14 days and 10 minute data for 5 years:
 
     [stats]
@@ -52,10 +51,10 @@ If you do not define a specific aggregation schema for your counters, the values
     xFilesFactor = 0.3
     aggregationMethod = average
 
-##### Show me the graphs!
+#### Show me the graphs!
 
 When rendering graphs in Graphite, you might want to keep your defined retention rules in mind.
-This means that, with the above configuration, when you look at a graph with a relative time range greater than 6 hours, you data will automatically be rendered per minute.
+This means that, with the above configuration, when you look at a graph with a relative time range greater than 6 hours, your data will automatically be rendered per minute.
 
 {% img /images/blog/outgoing_sms_6hour.png %}
 {% img /images/blog/outgoing_sms_8hour.png %}
@@ -73,7 +72,9 @@ To avoid this behaviour, render a larger graph using the width/height parameters
 {% img /images/blog/monitoring_minxstep_default.png %}
 {% img /images/blog/monitoring_minxstep_0.png %}
 
-### Monitoring integration into your application
+You can easily use your own graph rendering engine with the data Graphite provides. Using the `format` [URL parameter](https://graphite.readthedocs.org/en/latest/render_api.html), you can choose to receive the available data in JSON, CSV, ...
+
+## Monitoring integration into your application
 
 [StatsD PHP](http://github.com/FabriZZio/statsd-php) is a small PHP library which can be easily integrated.
 Monitoring your application is as easy as defining a default monitoring host and application namespace and you're off to go:
@@ -81,16 +82,26 @@ Monitoring your application is as easy as defining a default monitoring host and
     \StatsD\StatsD::setDefaultHandler(new \StatsD\UdpHandler($config->monitoring->host));
     \StatsD\StatsD::setDefaultNamespace($config->monitoring->namespace); // ex.: some-application.production
 
-The namespace you define in StatsD should differ per application. Graphite will create these namespaces automatically in its graphical interface,
-so once your monitoring environment is set up, there is zero configuration for your next application. New statistics will also be added automagically.
+The namespace you define in StatsD should differ per application. Graphite will create these namespaces automatically in its graphical interface.
+Dots in stats names will translate in a folder in the Graphite interface. Once your monitoring environment is set up, there is zero configuration for your next application.
 
-Increment a counter stat:
+{% img /images/blog/monitoring_tree.png %}
 
-    \StatsD\StatsD::getInstance()->increment('some-stat'); // will be rendered in Graphite under some-application.production.some-stat
+Adding a new location where you want to track your application requires one line of code and a originally chosen measurement name:
+
+Increment a counter stat: (mind the `.count` suffix, resulting in aggregated data using sum)
+
+    \StatsD\StatsD::getInstance()->increment('my-little-pony.jumps.count');
 
 Timer stat:
 
-    \StatsD\StatsD::getInstance()->time('some-stat', $timeInMilliseconds);
+    \StatsD\StatsD::getInstance()->time('my-little-pony.brush_hair', $timeInMilliseconds);
 
 More details on using the StatsD PHP library can be found in its [repository](http://github.com/FabriZZio/statsd-php).
 Libraries for other languages can be found in the original Etsy's [StatsD repository](http://github.com/etsy/statsd).
+
+## It's fun!
+Monitoring is fun, seriously. As a developer, you can actually _see_ your application being used.
+You can easily track errors and/or performance after new releases and when implementing new functionality, you should integrate measuring points from the start.
+
+No matter what project your are currently working on, it'll pay off.
